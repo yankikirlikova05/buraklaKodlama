@@ -27,9 +27,9 @@ public class Shooter extends SubsystemBase{
     public static WPI_TalonSRX slaveMotor;
     public Encoder shooterEncoder;
 
-    private double kP = 0.0000261; //proportional
+    private double kP = 0.000261; //proportional
     private double kI = 0; //integral
-    private double kD = 0.0; //derivative
+    private double kD = 0; //derivative
     public SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(1.49, 0.656, 0.00238);
     private PIDController pid = new PIDController(kP,kI,kD);
 
@@ -56,16 +56,12 @@ public class Shooter extends SubsystemBase{
         
         slaveMotor.setInverted(false);
         masterMotor.setInverted(false);
-        //slaveMotor.follow(masterMotor);
-
+        slaveMotor.follow(masterMotor);
         //shooterEncoder.setDistancePerPulse(encoderConstant);
         pid.setTolerance(100);
     }
     public void setShooter(double percentage) {
-      //masterMotor.set(percentage);
-      masterMotor.setVoltage(percentage*12);
-      slaveMotor.setVoltage(percentage*12);
-      //slaveMotor.set(percentage);
+      masterMotor.set(percentage);
     }
 
 
@@ -89,7 +85,8 @@ public class Shooter extends SubsystemBase{
         double pidOutput = pid.calculate(getRPM(), rpm);
         SmartDashboard.putNumber("Shooter FF  Output", ffOutput);
         SmartDashboard.putNumber("Shooter PID Output", pidOutput);
-        setShooter(MathUtil.clamp(pidOutput, -1, 1));
+        //setShooter(MathUtil.clamp(pidOutput, -1, 1));
+        setShooter(pidOutput);
     }
 
     public void runBackwards(){

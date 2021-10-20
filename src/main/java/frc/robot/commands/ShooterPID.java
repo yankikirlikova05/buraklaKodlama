@@ -12,7 +12,6 @@ public class ShooterPID extends CommandBase {
   int rpm;
   /** Creates a new ShooterPID. */
   private Shooter shooter;
-  private double scaleUp = 0;
 
   public ShooterPID(Shooter shooter1, int rpm) {
     this.rpm = rpm;
@@ -23,21 +22,15 @@ public class ShooterPID extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    scaleUp = 0;
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //shooter.setRPM(6000);
-    //shooter.setShooter(percentage*scaleUp);
-    shooter.setRPM(rpm);
-
-   // if (scaleUp <= 1) scaleUp += 0.05;
-    // shooter.setShooter(0.5);
+    //shooter.setRPM(rpm);
+    shooter.setShooter(1.0);
     SmartDashboard.putNumber("Shooter RPM", shooter.getRPM());
-    SmartDashboard.putNumber("Feedforward Value",shooter.feedforward.calculate(6000));
+    SmartDashboard.putNumber("Feedforward Value",shooter.feedforward.calculate(rpm));
 
   }
 

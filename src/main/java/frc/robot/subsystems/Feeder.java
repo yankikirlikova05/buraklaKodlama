@@ -26,7 +26,7 @@ public class Feeder extends SubsystemBase {
   }
 
   public void runForward(){
-    feeder.set(ControlMode.PercentOutput, 0.6);
+    feeder.set(ControlMode.PercentOutput, 1.0);
   }
   public void runBackwards(){
     feeder.set(ControlMode.PercentOutput, -0.6);
