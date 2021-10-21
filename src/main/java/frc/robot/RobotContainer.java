@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -15,6 +16,7 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.commands.ClimbPOV;
 import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.FeedBall;
+import frc.robot.commands.FeederBackwards;
 import frc.robot.commands.ShootBallSubsystems;
 import frc.robot.commands.ShooterPID;
 import frc.robot.commands.StorageAxisCommand;
@@ -54,6 +56,7 @@ public class RobotContainer {
   FeedBall feedBall = new FeedBall(storage, feeder);
   ClimbPOV climbPOV = new ClimbPOV(operator, climb);
   StorageAxisCommand storageAxisCommand = new StorageAxisCommand(operator, storage);
+  FeederBackwards feederBackwards = new FeederBackwards(operator, feeder);
   
   public RobotContainer() {
     configureButtonBindings();
@@ -90,27 +93,29 @@ public class RobotContainer {
     intakeOutButton.whileHeld(new RunCommand(()-> intake.intakeBackwards(), intake));
     intakeOutButton.whenReleased(new RunCommand(()-> intake.stop(), intake));
 
-
-    //! FIX TO TRIGGER STORAGE BACKWARDS
-    JoystickButton storageBackwards = new JoystickButton(operator, 12);
+    storage.setDefaultCommand(storageAxisCommand);
+    /*JoystickButton storageBackwards = new JoystickButton(operator, 12);
     storageBackwards.whileHeld(new RunCommand(()-> storage.bothBackward(), storage));
-    storageBackwards.whenReleased(new RunCommand(()-> storage.stop(), storage));
-
+    storageBackwards.whenReleased(new RunCommand(()-> storage.stop(), storage));*/
 
     //FEEDER BACKWARDS
-    JoystickButton feederBackwards = new JoystickButton(operator, 11);
-    feederBackwards.whileHeld(new RunCommand(()-> feeder.runBackwards() , feeder));
-
+    /*JoystickButton feederBackwards = new JoystickButton(operator, operator.getTriggerAxis(Hand.kRight));
+    feederBackwards.whileHeld(new RunCommand(()-> feeder.runBackwards() , feeder));*/
+    feeder.setDefaultCommand(feederBackwards);
 
     //! DRIVER JOYSTICK
-
+    //STOP SWERVE
     JoystickButton stopSwerve = new JoystickButton(driver, 4);
     stopSwerve.whenPressed(new RunCommand(()-> swerveDrivetrain.drive(0, 0, 0, false), swerveDrivetrain));
+    stopSwerve.whenReleased(new RunCommand(()-> swerveDrivetrain.setDefaultCommand(driveCommand), swerveDrivetrain));
 
+    //AUTO ALIGN
     JoystickButton autoAim = new JoystickButton(driver, 5);
     autoAim.whenActive(new RunCommand(
       ()-> swerveDrivetrain.drive(0, 0, shooter.calculateTargetAngle(), false), 
       swerveDrivetrain));
+
+    //TODO SLOW (SHIFT)
 
   }
 
