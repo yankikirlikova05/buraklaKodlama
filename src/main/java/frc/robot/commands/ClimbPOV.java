@@ -43,7 +43,6 @@ public class ClimbPOV extends CommandBase {
       case 315:
       climb.leftUp();
     }
-    
   }
 
   // Called once the command ends or is interrupted.

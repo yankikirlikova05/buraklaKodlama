@@ -12,10 +12,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.TurnToAngle;
 import frc.robot.subsystems.Swerve;
+import frc.robot.commands.ClimbPOV;
 import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.FeedBall;
 import frc.robot.commands.ShootBallSubsystems;
 import frc.robot.commands.ShooterPID;
+import frc.robot.commands.StorageAxisCommand;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.Shooter;
@@ -50,6 +52,8 @@ public class RobotContainer {
   ShootBallSubsystems shootBallSubsystems = new ShootBallSubsystems(shooter, feeder, storage);
   DriveForDistance driveForDistance = new DriveForDistance(swerveDrivetrain, 3);
   FeedBall feedBall = new FeedBall(storage, feeder);
+  ClimbPOV climbPOV = new ClimbPOV(operator, climb);
+  StorageAxisCommand storageAxisCommand = new StorageAxisCommand(operator, storage);
   
   public RobotContainer() {
     configureButtonBindings();
@@ -58,6 +62,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     
     swerveDrivetrain.setDefaultCommand(driveCommand);
+    climb.setDefaultCommand(climbPOV);
     
     //? TURNUVA BUTTON BINDING
     
@@ -75,16 +80,6 @@ public class RobotContainer {
     JoystickButton shooterButton = new JoystickButton(operator, 3);
     shooterButton.whileHeld(new RunCommand(()-> shooter.setShooter(1.0), shooter));
     
-    //CLIMB TEST
-    JoystickButton climbUp = new JoystickButton(joystick, 4);
-    climbUp.whileHeld(new RunCommand(()-> climb.climbUp(),climb));
-    climbUp.whenReleased(new RunCommand(()-> climb.stop(), climb));
-
-    JoystickButton climbDown = new JoystickButton(joystick, 2);
-    climbDown.whileHeld(new RunCommand(()-> climb.climbDown(),climb));
-    climbDown.whenReleased(new RunCommand(()-> climb.stop(), climb));
-
-    
     //INTAKE
     JoystickButton intakeOutButton = new JoystickButton(operator, 5);
     JoystickButton intakeInButton = new JoystickButton(operator, 6);
@@ -96,7 +91,7 @@ public class RobotContainer {
     intakeOutButton.whenReleased(new RunCommand(()-> intake.stop(), intake));
 
 
-    //STORAGE BACKWARDS
+    //! FIX TO TRIGGER STORAGE BACKWARDS
     JoystickButton storageBackwards = new JoystickButton(operator, 12);
     storageBackwards.whileHeld(new RunCommand(()-> storage.bothBackward(), storage));
     storageBackwards.whenReleased(new RunCommand(()-> storage.stop(), storage));

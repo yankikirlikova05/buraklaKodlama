@@ -45,6 +45,11 @@ public class Storage extends SubsystemBase {
     storageLeft.set(ControlMode.PercentOutput, 1 * Constants.STORAGE_SPEED);
   }
 
+  public void set(double speed){
+    storageRight.set(speed);
+    storageLeft.set(speed);
+  }
+
   public void stop(){
     storageLeft.set(0.0);
     storageRight.set(0.0);
