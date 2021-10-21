@@ -13,7 +13,7 @@ public class Climb extends SubsystemBase {
 
   public Victor climb1 = new Victor(0);
   public Victor climb2 = new Victor(1);
-  
+
   /** Creates a new Climb. */
   public Climb() {
     climb1.setInverted(false);
@@ -27,6 +27,22 @@ public class Climb extends SubsystemBase {
 
   public void climbDown(){
     climb1.set(-0.84);
+    climb2.set(-0.84);
+  }
+
+  public void rightUp(){
+    climb1.set(0.84);
+  }
+
+  public void rightDown(){
+    climb1.set(-0.84);
+  }
+
+  public void leftUp(){
+    climb2.set(0.84);
+  }
+
+  public void leftDown(){
     climb2.set(-0.84);
   }
 
