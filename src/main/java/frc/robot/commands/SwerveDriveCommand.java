@@ -15,6 +15,7 @@ import frc.robot.subsystems.Swerve;
 public class SwerveDriveCommand extends CommandBase {
   private final XboxController joystick;
   private final Swerve swerveSubsystem;
+  private boolean fieldOriented;
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   // TODO not using them currently, try out and see if you want to keep them for comp
@@ -28,6 +29,7 @@ public class SwerveDriveCommand extends CommandBase {
       this.joystick = joystick;
       // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(sw);
+      fieldOriented =  true;
     }
 
   // Called when the command is initially scheduled.
@@ -37,16 +39,29 @@ public class SwerveDriveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    final var xSpeed = xSpeedLimiter.calculate(joystick.getY(Hand.kLeft) * Constants.Swerve.kMaxSpeed);
+    final var xSpeed = xSpeedLimiter.calculate(
+      (Math.abs(joystick.getY(Hand.kLeft)) < 0.1) ? 0 : joystick.getY(Hand.kLeft)
+      * Constants.Swerve.kMaxSpeed);
+
     
-    final var ySpeed = ySpeedLimiter.calculate(joystick.getX(Hand.kLeft) * Constants.Swerve.kMaxSpeed );
-    final var rot = rotLimiter.calculate( joystick.getX(Hand.kRight) * Constants.Swerve.kMaxAngularSpeed) ;
-    boolean fieldRelative = false;
+    final var ySpeed = ySpeedLimiter.calculate(
+      (Math.abs(joystick.getX(Hand.kLeft)) <  0.1) ? 0 : joystick.getX(Hand.kLeft)
+     * Constants.Swerve.kMaxSpeed );
+     
+    final var rot = rotLimiter.calculate(
+      (Math.abs(joystick.getX(Hand.kRight)) < 0.1) ? 0 : joystick.getX(Hand.kRight)
+      * Constants.Swerve.kMaxAngularSpeed) ;
+
+    if(joystick.getAButton()){
+      fieldOriented = fieldOriented ? false : true;
+    }
+  
+
+
     //swerveSubsystem.drive(xSpeed * 0.6, ySpeed * 0.6, rot * 0.4, fieldRelative);
-    swerveSubsystem.drive(xSpeed, ySpeed, rot, fieldRelative);
+    swerveSubsystem.drive(xSpeed, ySpeed, rot, fieldOriented);
 
   }
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}

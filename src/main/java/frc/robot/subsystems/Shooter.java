@@ -63,11 +63,10 @@ public class Shooter extends SubsystemBase{
     }
     public void setShooter(double percentage) {
       //masterMotor.set(percentage);
-      masterMotor.setVoltage(percentage*12);
-      slaveMotor.setVoltage(percentage*12);
+      masterMotor.setVoltage(percentage*13);
+      slaveMotor.setVoltage(percentage*13);
       //slaveMotor.set(percentage);
     }
-
 
     public double getRPM(){
         return shooterEncoder.getRate() * 60.;
@@ -115,7 +114,7 @@ public class Shooter extends SubsystemBase{
         Units.degreesToRadians(result.getBestTarget().getPitch()));
         //translation = PhotonUtils.estimateCameraToTargetTranslation(range, Rotation2d.fromDegrees(-target.getYaw()));
         return yaw;
-
 }
+
     
 }

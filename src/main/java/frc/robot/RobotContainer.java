@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,11 +11,9 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.TurnToAngle;
-import frc.robot.lib.util.LED;
 import frc.robot.subsystems.Swerve;
-import frc.robot.commands.AutoShoot;
 import frc.robot.commands.DriveForDistance;
-import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.FeedBall;
 import frc.robot.commands.ShootBallSubsystems;
 import frc.robot.commands.ShooterPID;
 import frc.robot.subsystems.Intake;
@@ -24,107 +21,105 @@ import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Storage;
 import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Climb;
 
-/**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and button mappings) should be declared here.
- */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
+
+  //SUBSYSTEMS
   Swerve swerveDrivetrain = new Swerve(true);
-  XboxController driver = new XboxController(0);
-  SwerveDriveCommand driveCommand = new SwerveDriveCommand(swerveDrivetrain, driver);
   LEDSubsystem LED = new LEDSubsystem();
+  Climb climb = new Climb();
+  Shooter shooter = new Shooter();
+  Intake intake = new Intake();
+  Storage storage = new Storage();
+  Feeder feeder = new Feeder(false);
 
+  //JOYSTICKS
+  //! fix index
+  XboxController driver = new XboxController(1);
+  XboxController operator = new XboxController(3);
+
+  Joystick joystick = new Joystick(0);
+
+
+
+  //COMMANDS
+  SwerveDriveCommand driveCommand = new SwerveDriveCommand(swerveDrivetrain, driver);
+  ShooterPID shooterpid = new ShooterPID(shooter, 2000);
+  TurnToAngle turnToAngle = new TurnToAngle(swerveDrivetrain, 45);
+  ShootBallSubsystems shootBallSubsystems = new ShootBallSubsystems(shooter, feeder, storage);
+  DriveForDistance driveForDistance = new DriveForDistance(swerveDrivetrain, 3);
+  FeedBall feedBall = new FeedBall(storage, feeder);
   
-  public Shooter shooter = new Shooter();
-  public ShooterPID shooterpid = new ShooterPID(shooter, 2000);
-  //AutoShoot autoShoot = new AutoShoot(shooter, swerveDrivetrain);
-
-  public Intake intake = new Intake();
-  public IntakeCommand intakeCommand = new IntakeCommand(intake);
-
-  public Storage storage = new Storage();
-
-  public Feeder feeder = new Feeder(false);
-  
-  public TurnToAngle turnToAngle = new TurnToAngle(swerveDrivetrain, 45);
-
-  public ShootBallSubsystems shootBallSubsystems = new ShootBallSubsystems(shooter, feeder, storage);
-
-  public DriveForDistance driveForDistance = new DriveForDistance(swerveDrivetrain, 3);
-
-
-
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Configure the button bindings
     configureButtonBindings();
   }
-
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() {
-    // commented out because shooter is broken
-    swerveDrivetrain.setDefaultCommand(driveCommand);
-
   
-    /*JoystickButton ledButton = new JoystickButton(driver, 1);
-
-    ledButton.whenPressed(new RunCommand(()-> LED.turnOn(), LED));
-    ledButton.whenReleased(
-      new RunCommand(
-        () -> LED.turnOff(),
-        LED)
-    );
-    new JoystickButton(driver,2).whenHeld(shooterpid);*/
-
-    //Storage Feed balls
-    new JoystickButton(driver, 4).whileHeld(new RunCommand(()-> storage.bothBackward(), storage));
-    new JoystickButton(driver, 4).whenReleased(new RunCommand(()-> storage.stop(), storage));
-    //Storage Reverse
-    new JoystickButton(driver, 3).whileHeld(new RunCommand(()->storage.bothForward(), storage));
-    new JoystickButton(driver,3).whenReleased(new RunCommand(()->storage.stop(), storage));
+  private void configureButtonBindings() {
     
-    JoystickButton driveButton = new JoystickButton(driver, 1);
-    driveButton.whileHeld(turnToAngle);
-    driveButton.whenReleased(
-    new RunCommand(
-      () ->  swerveDrivetrain.drive(0,0,0, false),
+    swerveDrivetrain.setDefaultCommand(driveCommand);
+    
+    //? TURNUVA BUTTON BINDING
+    
+    //FEEDER + STORAGE TOGETHER
+    JoystickButton feedBallButton = new JoystickButton(operator, 1);
+    feedBallButton.whileHeld(feedBall);
+    
+    
+    //! FIX TO XBOX CONTROLLER
+    /* JoystickButton climbDown = new JoystickButton(operator, 2);
+    climbDown.whileHeld(new RunCommand(()-> climb.climbDown(),climb));
+    climbDown.whenReleased(new RunCommand(()-> climb.stop(), climb));
+    */
+    //SHOOTER
+    JoystickButton shooterButton = new JoystickButton(operator, 3);
+    shooterButton.whileHeld(new RunCommand(()-> shooter.setShooter(1.0), shooter));
+    
+    //CLIMB TEST
+    JoystickButton climbUp = new JoystickButton(joystick, 4);
+    climbUp.whileHeld(new RunCommand(()-> climb.climbUp(),climb));
+    climbUp.whenReleased(new RunCommand(()-> climb.stop(), climb));
+
+    JoystickButton climbDown = new JoystickButton(joystick, 2);
+    climbDown.whileHeld(new RunCommand(()-> climb.climbDown(),climb));
+    climbDown.whenReleased(new RunCommand(()-> climb.stop(), climb));
+
+    
+    //INTAKE
+    JoystickButton intakeOutButton = new JoystickButton(operator, 5);
+    JoystickButton intakeInButton = new JoystickButton(operator, 6);
+    
+    intakeInButton.whileHeld(new RunCommand(()-> intake.intakeForward() , intake));
+    intakeInButton.whenReleased(new RunCommand(()-> intake.stop() , intake));
+  
+    intakeOutButton.whileHeld(new RunCommand(()-> intake.intakeBackwards(), intake));
+    intakeOutButton.whenReleased(new RunCommand(()-> intake.stop(), intake));
+
+
+    //STORAGE BACKWARDS
+    JoystickButton storageBackwards = new JoystickButton(operator, 12);
+    storageBackwards.whileHeld(new RunCommand(()-> storage.bothBackward(), storage));
+    storageBackwards.whenReleased(new RunCommand(()-> storage.stop(), storage));
+
+
+    //FEEDER BACKWARDS
+    JoystickButton feederBackwards = new JoystickButton(operator, 11);
+    feederBackwards.whileHeld(new RunCommand(()-> feeder.runBackwards() , feeder));
+
+
+    //! DRIVER JOYSTICK
+
+    JoystickButton stopSwerve = new JoystickButton(driver, 4);
+    stopSwerve.whenPressed(new RunCommand(()-> swerveDrivetrain.drive(0, 0, 0, false), swerveDrivetrain));
+
+    JoystickButton autoAim = new JoystickButton(driver, 5);
+    autoAim.whenActive(new RunCommand(
+      ()-> swerveDrivetrain.drive(0, 0, shooter.calculateTargetAngle(), false), 
       swerveDrivetrain));
-    
-
-    //TURN TO ANGLE
-    //new JoystickButton(driver, 1).whileHeld(turnToAngle);
-
-    JoystickButton feederButton = new JoystickButton(driver, 8);
-    feederButton.whileHeld(new RunCommand(()-> feeder.runForward(), feeder));
-    feederButton.whenReleased(new RunCommand(()-> feeder.stop(), feeder));
-
-    JoystickButton shooterButton = new JoystickButton(driver, 2);
-    shooterButton.whileHeld(shooterpid);
-    
-    
-
-    //TODO SHOOTER SUBSYSTEM BUTTON BINDING
-
-
 
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return intakeCommand;
+    return null;
   }
 }

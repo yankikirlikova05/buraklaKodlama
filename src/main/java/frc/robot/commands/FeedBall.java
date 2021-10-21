@@ -5,31 +5,33 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Storage;
 
-public class IntakeCommand extends CommandBase {
-  /** Creates a new IntakeCommand. */
-  public Intake intake;
-  public IntakeCommand(Intake intake) {
-    this.intake = intake;
-    addRequirements(intake);
-    // Use addRequirements() here to declare subsystem dependencies.
+public class FeedBall extends CommandBase {
+  
+  public Storage storage;
+  public Feeder feeder;
+
+  public FeedBall(Storage storage, Feeder feeder) {
+    this.storage = storage;
+    this.feeder = feeder;
+    addRequirements(feeder,storage);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.intakeForward();
+    feeder.runForward();
+    storage.bothForward();
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stop();
+    feeder.stop();
+    storage.stop();
   }
 
   // Returns true when the command should end.
