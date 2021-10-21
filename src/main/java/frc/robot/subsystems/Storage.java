@@ -42,7 +42,7 @@ public class Storage extends SubsystemBase {
 
   public void leftForward(){
     storageRight.set(ControlMode.PercentOutput, -1 * Constants.STORAGE_SPEED);
-    storageLeft.set(ControlMode.PercentOutput, 1 * Constants.STORAGE_SPEED);
+    storageLeft.set(ControlMode.PercentOutput, Constants.STORAGE_SPEED);
   }
 
   public void set(double speed){

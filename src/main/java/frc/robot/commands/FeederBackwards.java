@@ -30,11 +30,14 @@ public class FeederBackwards extends CommandBase {
     if(Math.abs(operator.getTriggerAxis(Hand.kLeft))>0.2){
       feeder.runForward();
     }
+    else feeder.stop();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    feeder.stop();
+  }
 
   // Returns true when the command should end.
   @Override

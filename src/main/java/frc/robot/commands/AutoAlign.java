@@ -4,42 +4,55 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.Constants;
 
 public class AutoAlign extends CommandBase {
   /** Creates a new AutoAlign. */
-  Shooter sh;
-  Swerve sw;
-  double kP = 0.0075;
+  Vision vision;
+  Swerve swerve;
+  LEDSubsystem led;
+  double kP = 0.0095;
 
-  public AutoAlign(Shooter a, Swerve b) {
-    sh = a; sw = b;    
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(sw, sh);
+  public AutoAlign(Vision vis, Swerve b, LEDSubsystem led) {
+    this.vision = vis; 
+    this.swerve = b;    
+    this.led = led;
+    
+    addRequirements(swerve, vision, led);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    led.turnOn();
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double rot = Constants.Swerve.kMaxAngularSpeed * (MathUtil.clamp((sh.calculateTargetAngle() * kP),-1,1));
-    sw.drive(0,0,rot, false);
+    double rot = Constants.Swerve.kMaxAngularSpeed * (
+    vision.getYaw() * kP
+    );
+    swerve.drive(0, 0, rot, false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    swerve.drive(0, 0, 0, false);
+    led.turnOff();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(vision.getYaw()) < 2;
   }
 }

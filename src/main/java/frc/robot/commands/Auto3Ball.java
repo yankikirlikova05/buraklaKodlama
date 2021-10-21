@@ -4,7 +4,15 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.Storage;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -13,9 +21,33 @@ public class Auto3Ball extends SequentialCommandGroup {
 
   
   /** Creates a new Auto3Ball. */
-  public Auto3Ball() {
+  public Auto3Ball(
+    Shooter shooter,
+    AutoAlign autoAlign,
+    Feeder feeder,
+    Storage storage,
+    Swerve swerve,
+    Vision vis, 
+    LEDSubsystem led) {
+
+    RunCommand shooterCommand = new RunCommand(()-> shooter.setShooter(1.0), shooter);
+    RunCommand feederCommand = new RunCommand(() -> feeder.runForward(), feeder);
+    RunCommand storageCommand = new RunCommand(() -> storage.bothForward(), storage);
+
+    new AutoAlign(vis,swerve , led);
+
+
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands();
+    addCommands(
+      autoAlign,
+      shooterCommand.withTimeout(4),
+      new ParallelCommandGroup(
+        shooterCommand,
+        feederCommand,
+        storageCommand
+      ).withTimeout(6)
+      );
   }
+
 }

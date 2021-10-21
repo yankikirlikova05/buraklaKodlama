@@ -41,6 +41,8 @@ public class StorageAxisCommand extends CommandBase {
     if(Math.abs(operator.getTriggerAxis(Hand.kRight))> 0.2){
       storage.bothBackward();
     }
+    else storage.stop();
+    
   }
 
   // Called once the command ends or is interrupted.

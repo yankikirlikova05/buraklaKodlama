@@ -13,6 +13,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.TurnToAngle;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Vision;
+import frc.robot.commands.Auto3Ball;
+import frc.robot.commands.AutoAlign;
 import frc.robot.commands.ClimbPOV;
 import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.FeedBall;
@@ -37,13 +40,13 @@ public class RobotContainer {
   Intake intake = new Intake();
   Storage storage = new Storage();
   Feeder feeder = new Feeder(false);
+  Vision vision = new Vision();
 
   //JOYSTICKS
   //! fix index
-  XboxController driver = new XboxController(1);
-  XboxController operator = new XboxController(3);
+  XboxController driver = new XboxController(0);
+  XboxController operator = new XboxController(1);
 
-  Joystick joystick = new Joystick(0);
 
 
 
@@ -57,6 +60,9 @@ public class RobotContainer {
   ClimbPOV climbPOV = new ClimbPOV(operator, climb);
   StorageAxisCommand storageAxisCommand = new StorageAxisCommand(operator, storage);
   FeederBackwards feederBackwards = new FeederBackwards(operator, feeder);
+  AutoAlign autoAlign = new AutoAlign(vision, swerveDrivetrain, LED);
+
+  Auto3Ball auto3Ball = new Auto3Ball(shooter, autoAlign, feeder, storage, swerveDrivetrain, vision, LED);
   
   public RobotContainer() {
     configureButtonBindings();
@@ -66,23 +72,27 @@ public class RobotContainer {
     
     swerveDrivetrain.setDefaultCommand(driveCommand);
     climb.setDefaultCommand(climbPOV);
-    
-    //? TURNUVA BUTTON BINDING
-    
+        
     //FEEDER + STORAGE TOGETHER
+
     JoystickButton feedBallButton = new JoystickButton(operator, 1);
     feedBallButton.whileHeld(feedBall);
-    
-    
-    //! FIX TO XBOX CONTROLLER
-    /* JoystickButton climbDown = new JoystickButton(operator, 2);
-    climbDown.whileHeld(new RunCommand(()-> climb.climbDown(),climb));
-    climbDown.whenReleased(new RunCommand(()-> climb.stop(), climb));
-    */
+
     //SHOOTER
     JoystickButton shooterButton = new JoystickButton(operator, 3);
-    shooterButton.whileHeld(new RunCommand(()-> shooter.setShooter(1.0), shooter));
-    
+    shooterButton.whenPressed(new RunCommand(()-> shooter.setShooter(1.0), shooter));
+    shooterButton.whenReleased(new RunCommand(()-> shooter.setShooter(0.0), shooter));
+
+    JoystickButton LEDButton = new JoystickButton(operator, 4);
+    LEDButton.whenPressed(
+    new RunCommand(
+      () -> LED.turnOn(),
+      LED)  
+    );
+    LEDButton.whenReleased(new RunCommand(
+      () -> LED.turnOff(),
+      LED)  );
+
     //INTAKE
     JoystickButton intakeOutButton = new JoystickButton(operator, 5);
     JoystickButton intakeInButton = new JoystickButton(operator, 6);
@@ -99,9 +109,9 @@ public class RobotContainer {
     storageBackwards.whenReleased(new RunCommand(()-> storage.stop(), storage));*/
 
     //FEEDER BACKWARDS
-    /*JoystickButton feederBackwards = new JoystickButton(operator, operator.getTriggerAxis(Hand.kRight));
-    feederBackwards.whileHeld(new RunCommand(()-> feeder.runBackwards() , feeder));*/
     feeder.setDefaultCommand(feederBackwards);
+
+    //new JoystickButton(operator, 10).whileHeld(autoAlign);
 
     //! DRIVER JOYSTICK
     //STOP SWERVE
@@ -111,15 +121,13 @@ public class RobotContainer {
 
     //AUTO ALIGN
     JoystickButton autoAim = new JoystickButton(driver, 5);
-    autoAim.whenActive(new RunCommand(
-      ()-> swerveDrivetrain.drive(0, 0, shooter.calculateTargetAngle(), false), 
-      swerveDrivetrain));
-
+    autoAim.whileHeld(autoAlign);
+    
     //TODO SLOW (SHIFT)
 
   }
 
   public Command getAutonomousCommand() {
-    return null;
+    return auto3Ball;
   }
 }

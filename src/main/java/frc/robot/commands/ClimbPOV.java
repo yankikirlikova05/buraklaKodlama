@@ -29,25 +29,34 @@ public class ClimbPOV extends CommandBase {
     switch(operator.getPOV()){
       case 0:
         climb.climbUp();
+        break;
       case 45:
-      climb.rightUp();
+        climb.rightUp();
+        break;
       case 90:
       //pass
       case 135:
-      climb.rightDown();
+        climb.rightDown();
+        break;
       case 180:
-      climb.climbDown();
+        climb.climbDown();
+        break;
       case 225:
-      climb.leftDown();
-      //pass
+        climb.leftDown();
+        break;
       case 315:
-      climb.leftUp();
+        climb.leftUp();
+        break;
+      default:
+        climb.stop();
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    climb.stop();
+  }
 
   // Returns true when the command should end.
   @Override
