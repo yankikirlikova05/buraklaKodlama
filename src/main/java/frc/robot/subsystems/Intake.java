@@ -13,7 +13,9 @@ import frc.robot.Constants;
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   public WPI_TalonSRX intake = new WPI_TalonSRX(2);
-  public Intake() {}
+  public Intake() {
+    intake.setInverted(true);
+  }
 
   @Override
   public void periodic() {

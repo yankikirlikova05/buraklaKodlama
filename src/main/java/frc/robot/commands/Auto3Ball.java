@@ -48,9 +48,9 @@ public class Auto3Ball extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       autoAlign,
-      shooterCommand.withTimeout(4),
+      new RunCommand(()-> shooter.setShooter(1.0), shooter).withTimeout(4),
       new ParallelCommandGroup(
-        shooterCommand,
+        new RunCommand(()-> shooter.setShooter(1.0), shooter),
         feederCommand,
         storageCommand
       ).withTimeout(6),

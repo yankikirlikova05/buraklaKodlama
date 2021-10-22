@@ -28,7 +28,7 @@ public class FeederBackwards extends CommandBase {
   @Override
   public void execute() {
     if(Math.abs(operator.getTriggerAxis(Hand.kLeft))>0.2){
-      feeder.runForward();
+      feeder.runBackwards();
     }
     else feeder.stop();
   }

@@ -62,10 +62,9 @@ public class RobotContainer {
   FeederBackwards feederBackwards = new FeederBackwards(operator, feeder);
   AutoAlign autoAlign = new AutoAlign(vision, swerveDrivetrain, LED);
 
-  Auto3Ball auto3Ball = new Auto3Ball(shooter, autoAlign, feeder, storage, swerveDrivetrain, vision, LED);
+  //Auto3Ball auto3Ball = new Auto3Ball(shooter, autoAlign, feeder, storage, swerveDrivetrain, vision, LED);
   
   public RobotContainer() {
-    //TODO: PORT FORWARDER 
     PortForwarder.add(5800, "photonvision.local", 5800);
 
     configureButtonBindings();
@@ -110,7 +109,7 @@ public class RobotContainer {
     storageBackwards.whileHeld(new RunCommand(()-> storage.bothBackward(), storage));
     storageBackwards.whenReleased(new RunCommand(()-> storage.stop(), storage));*/
 
-    //FEEDER BACKWARDS
+    //TODO FEEDER BACKWARDS 
     feeder.setDefaultCommand(feederBackwards);
 
     //new JoystickButton(operator, 10).whileHeld(autoAlign);
@@ -127,6 +126,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return auto3Ball;
+    return null;
   }
 }
