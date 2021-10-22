@@ -33,15 +33,17 @@ public class StorageAxisCommand extends CommandBase {
     else if(operator.getX(Hand.kLeft)< -0.2){
       storage.leftForward();
     }
-
     /*if(operator.getY(Hand.kLeft)>0.2){
       storage.bothBackward();
     }
 */
-    if(Math.abs(operator.getTriggerAxis(Hand.kRight))> 0.2){
+    else if(Math.abs(operator.getTriggerAxis(Hand.kRight))> 0.2){
       storage.bothBackward();
     }
-    else storage.stop();
+
+    else{ 
+      storage.stop();
+    }
     
   }
 

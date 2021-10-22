@@ -65,6 +65,9 @@ public class RobotContainer {
   Auto3Ball auto3Ball = new Auto3Ball(shooter, autoAlign, feeder, storage, swerveDrivetrain, vision, LED);
   
   public RobotContainer() {
+    //TODO: PORT FORWARDER 
+    //PortForwarder.add(5800, "photonvision.local", 5800);
+
     configureButtonBindings();
   }
   
@@ -72,9 +75,8 @@ public class RobotContainer {
     
     swerveDrivetrain.setDefaultCommand(driveCommand);
     climb.setDefaultCommand(climbPOV);
-        
+  
     //FEEDER + STORAGE TOGETHER
-
     JoystickButton feedBallButton = new JoystickButton(operator, 1);
     feedBallButton.whileHeld(feedBall);
 
@@ -116,15 +118,12 @@ public class RobotContainer {
     //! DRIVER JOYSTICK
     //STOP SWERVE
     JoystickButton stopSwerve = new JoystickButton(driver, 4);
-    stopSwerve.whenPressed(new RunCommand(()-> swerveDrivetrain.drive(0, 0, 0, false), swerveDrivetrain));
+    stopSwerve.whileHeld(new RunCommand(()-> swerveDrivetrain.drive(0, 0, 0, false), swerveDrivetrain));
     stopSwerve.whenReleased(new RunCommand(()-> swerveDrivetrain.setDefaultCommand(driveCommand), swerveDrivetrain));
 
     //AUTO ALIGN
     JoystickButton autoAim = new JoystickButton(driver, 5);
     autoAim.whileHeld(autoAlign);
-    
-    //TODO SLOW (SHIFT)
-
   }
 
   public Command getAutonomousCommand() {
