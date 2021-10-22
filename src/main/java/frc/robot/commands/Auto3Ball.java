@@ -33,7 +33,7 @@ public class Auto3Ball extends SequentialCommandGroup {
     RunCommand shooterCommand = new RunCommand(()-> shooter.setShooter(1.0), shooter);
     RunCommand feederCommand = new RunCommand(() -> feeder.runForward(), feeder);
     RunCommand storageCommand = new RunCommand(() -> storage.bothForward(), storage);
-    RunCommand drive = new RunCommand(()-> swerve.drive(0, 0.2, 0, false),swerve){
+    RunCommand drive = new RunCommand(()-> swerve.drive(0, 0.4, 0, false),swerve){
     @Override
     public void end(boolean interrupted){
       swerve.drive(0, 0, 0, false);
