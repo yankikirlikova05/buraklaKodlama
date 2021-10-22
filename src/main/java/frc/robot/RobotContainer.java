@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpiutil.net.PortForwarder;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.TurnToAngle;
 import frc.robot.subsystems.Swerve;
@@ -65,7 +66,7 @@ public class RobotContainer {
   
   public RobotContainer() {
     //TODO: PORT FORWARDER 
-    //PortForwarder.add(5800, "photonvision.local", 5800);
+    PortForwarder.add(5800, "photonvision.local", 5800);
 
     configureButtonBindings();
   }
@@ -118,7 +119,7 @@ public class RobotContainer {
     //STOP SWERVE
     JoystickButton stopSwerve = new JoystickButton(driver, 4);
     stopSwerve.whileHeld(new RunCommand(()-> swerveDrivetrain.drive(0, 0, 0, false), swerveDrivetrain));
-    stopSwerve.whenReleased(new RunCommand(()-> swerveDrivetrain.setDefaultCommand(driveCommand), swerveDrivetrain));
+    //stopSwerve.whenReleased(new RunCommand(()-> swerveDrivetrain.setDefaultCommand(driveCommand), swerveDrivetrain));
 
     //AUTO ALIGN
     JoystickButton autoAim = new JoystickButton(driver, 5);
