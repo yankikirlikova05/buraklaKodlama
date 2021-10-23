@@ -28,19 +28,7 @@ public class Auto3Ball extends SequentialCommandGroup {
     Storage storage,
     Swerve swerve,
     Vision vis, 
-    LEDSubsystem led) {
-
-    RunCommand shooterCommand = new RunCommand(()-> shooter.setShooter(1.0), shooter);
-    RunCommand feederCommand = new RunCommand(() -> feeder.runForward(), feeder);
-    RunCommand storageCommand = new RunCommand(() -> storage.bothForward(), storage);
-    RunCommand drive = new RunCommand(()-> swerve.drive(0, 0.4, 0, false), swerve){
-    @Override
-    public void end(boolean interrupted){
-      swerve.drive(0, 0, 0, false);
-    }
-
-    };
-
+    LEDSubsystem led){
     new AutoAlign(vis,swerve , led);
 
 
@@ -51,11 +39,15 @@ public class Auto3Ball extends SequentialCommandGroup {
       new RunCommand(()-> shooter.setShooter(1.0), shooter).withTimeout(4),
       new ParallelCommandGroup(
         new RunCommand(()-> shooter.setShooter(1.0), shooter),
-        feederCommand,
-        storageCommand
+        new RunCommand(() -> feeder.runForward(), feeder),
+        new RunCommand(() -> storage.bothForward(), storage)
       ).withTimeout(6),
-      drive.withTimeout(3)
+      new RunCommand(()-> swerve.drive(0, 0.4, 0, false), swerve){
+        @Override
+        public void end(boolean interrupted){
+          swerve.drive(0, 0, 0, false);
+        }}.withTimeout(3)
       );
-  }
 
+}
 }
