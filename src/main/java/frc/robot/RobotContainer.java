@@ -15,7 +15,9 @@ import frc.robot.commands.TurnToAngle;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.commands.Auto3Ball;
+import frc.robot.commands.Auto3BallIntakeDrop;
 import frc.robot.commands.AutoAlign;
+import frc.robot.commands.BlindAuto;
 import frc.robot.commands.ClimbPOV;
 import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.FeedBall;
@@ -32,7 +34,7 @@ import frc.robot.subsystems.Climb;
 
 public class RobotContainer {
 
-  //SUBSYSTEMS
+  // !SUBSYSTEMS
   Swerve swerveDrivetrain = new Swerve(true);
   LEDSubsystem LED = new LEDSubsystem();
   Climb climb = new Climb();
@@ -42,15 +44,12 @@ public class RobotContainer {
   Feeder feeder = new Feeder(false);
   Vision vision = new Vision();
 
-  //JOYSTICKS
-  //! fix index
+  // !JOYSTICKS
+  // !fix index
   XboxController driver = new XboxController(0);
   XboxController operator = new XboxController(1);
 
-
-
-
-  //COMMANDS
+  // !COMMANDS
   SwerveDriveCommand driveCommand = new SwerveDriveCommand(swerveDrivetrain, driver);
   ShooterPID shooterpid = new ShooterPID(shooter, 2000);
   TurnToAngle turnToAngle = new TurnToAngle(swerveDrivetrain, 45);
@@ -62,7 +61,10 @@ public class RobotContainer {
   FeederBackwards feederBackwards = new FeederBackwards(operator, feeder);
   AutoAlign autoAlign = new AutoAlign(vision, swerveDrivetrain, LED);
 
-  //Auto3Ball auto3Ball = new Auto3Ball(shooter, autoAlign, feeder, storage, swerveDrivetrain, vision, LED);
+  // !AUTO COMMANDS
+  BlindAuto blindAuto = new BlindAuto(swerveDrivetrain, feeder, storage, shooter);
+  Auto3Ball auto3Ball = new Auto3Ball(shooter, autoAlign, feeder, storage, swerveDrivetrain, vision, LED);
+  Auto3BallIntakeDrop auto3BallIntake = new Auto3BallIntakeDrop(swerveDrivetrain, feeder, storage, shooter, autoAlign);
   
   public RobotContainer() {
     PortForwarder.add(5800, "photonvision.local", 5800);
@@ -123,6 +125,8 @@ public class RobotContainer {
     //AUTO ALIGN
     JoystickButton autoAim = new JoystickButton(driver, 5);
     autoAim.whileHeld(autoAlign);
+
+
   }
   // AUTO MODES
     // blindly shoot three balls and move forward
@@ -139,7 +143,14 @@ public class RobotContainer {
      * then run the auto align command in parallel to LED.turnOn() ?
      */
 
-  public Command getAutonomousCommand() {
-    return null;
+  public Command getAutonomousCommand(int auto) {
+    switch (auto) {
+      case 1:
+        return auto3Ball;
+      case 2:
+        return auto3BallIntake;
+      default:
+        return blindAuto;
+    }
   }
 }
