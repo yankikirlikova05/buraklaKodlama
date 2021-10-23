@@ -37,10 +37,14 @@ public class AutoAlign extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double rot = Constants.Swerve.kMaxAngularSpeed * (
-    vision.getYaw() * kP
-    );
-    swerve.drive(0, 0, rot, false);
+
+    if(vision.hasTarget()){
+      double rot = Constants.Swerve.kMaxAngularSpeed * (
+      vision.getYaw() * kP
+      );
+      swerve.drive(0, 0, rot, false);
+    }
+    else if(!led.getState()) led.turnOn();
   }
 
   // Called once the command ends or is interrupted.
@@ -53,6 +57,7 @@ public class AutoAlign extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(vision.getYaw()) < 2;
+    if (vision.hasTarget()) return (Math.abs(vision.getYaw()) < 2);
+    else return false;
   }
 }

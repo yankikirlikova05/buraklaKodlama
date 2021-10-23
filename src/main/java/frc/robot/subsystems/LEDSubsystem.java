@@ -28,4 +28,7 @@ public class LEDSubsystem extends SubsystemBase {
   public void toggle(){
     led.toggle();
   }
+  public boolean getState(){
+    return led.get();
+  }
 }

@@ -124,6 +124,20 @@ public class RobotContainer {
     JoystickButton autoAim = new JoystickButton(driver, 5);
     autoAim.whileHeld(autoAlign);
   }
+  // AUTO MODES
+    // blindly shoot three balls and move forward
+    //auto align & shoot & move
+    // auto align & shoot & move forward and back 
+    
+    // TODO 
+    // check shift mode 
+    // auto align isFinished problem | getYaw nullPointerHandling
+    // ? DONE, CHECK IN THE PITS
+    /**
+     * possible solutions for the null pointer exception:
+     * run a sequential command group where you turn on the LED and then wait | ! WORKED ANOTHER WORKAROOUND
+     * then run the auto align command in parallel to LED.turnOn() ?
+     */
 
   public Command getAutonomousCommand() {
     return null;

@@ -43,6 +43,10 @@ public class Vision extends SubsystemBase {
     return nt.getEntry("targetYaw").getDouble(Double.NaN);
   }
 
+  public boolean hasTarget(){
+    return nt.getEntry("hasTargets").getBoolean(false);
+  }
+
   @Override
   public void periodic() {
     result = camera.getLatestResult();
