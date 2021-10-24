@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -32,6 +33,7 @@ public class Robot extends TimedRobot {
     autoChooser.setDefaultOption("Blind Auto", 0);
     autoChooser.addOption("3 Ball Auto w/ Vision", 1);
     autoChooser.addOption("3 Ball Auto w/ Vision + Intake", 2);
+    SmartDashboard.putData(autoChooser);
   }
 
   /**
@@ -60,7 +62,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand(autoChooser.getSelected());
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

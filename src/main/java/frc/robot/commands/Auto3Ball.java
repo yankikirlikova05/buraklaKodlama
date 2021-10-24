@@ -17,37 +17,32 @@ import edu.wpi.first.wpilibj.Timer;// NOTE:  Consider using this command inline,
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class Auto3Ball extends SequentialCommandGroup {
-  Timer timer = new Timer();
-
-  
   /** Creates a new Auto3Ball. */
   public Auto3Ball(
     Shooter shooter,
-    AutoAlign autoAlign,
     Feeder feeder,
     Storage storage,
     Swerve swerve,
     Vision vis, 
     LEDSubsystem led){
-    new AutoAlign(vis,swerve , led);
 
 
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
-      autoAlign,
+    super(
+      new AutoAlign(vis, swerve, led),
       new RunCommand(()-> shooter.setShooter(1.0), shooter).withTimeout(4),
       new ParallelCommandGroup(
         new RunCommand(()-> shooter.setShooter(1.0), shooter),
         new RunCommand(() -> feeder.runForward(), feeder),
         new RunCommand(() -> storage.bothForward(), storage)
       ).withTimeout(6),
-      new RunCommand(()-> swerve.drive(0, 0.4, 0, false), swerve){
+      new RunCommand(()-> swerve.drive(0, 0.4, 0, true), swerve){
         @Override
         public void end(boolean interrupted){
-          swerve.drive(0, 0, 0, false);
-        }}.withTimeout(3)
+          swerve.drive(0, 0, 0, true);
+        }}.withTimeout(2)
       );
 
-}
+  }
 }

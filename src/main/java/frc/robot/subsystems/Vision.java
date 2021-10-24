@@ -45,7 +45,7 @@ public class Vision extends SubsystemBase {
 
   public boolean hasTarget(){
     // ! FIXME
-    return nt.getEntry("hasTargets").getBoolean(false);
+    return nt.getEntry("hasTarget").getBoolean(false);
   }
 
   @Override

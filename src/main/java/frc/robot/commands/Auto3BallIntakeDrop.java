@@ -16,11 +16,6 @@ import frc.robot.subsystems.Swerve;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class Auto3BallIntakeDrop extends SequentialCommandGroup {
-  AutoAlign autoAlign;
-  Shooter shooter; 
-  Feeder feeder;
-  Storage storage;
-  Swerve swerve;
 
   public Auto3BallIntakeDrop(
     Swerve swerve,
@@ -30,15 +25,10 @@ public class Auto3BallIntakeDrop extends SequentialCommandGroup {
     AutoAlign auto
   ) {
 
-    this.shooter = shooter;
-    this.feeder = feeder;
-    this.storage = storage;
-    this.swerve = swerve;
-    this.autoAlign = auto;
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
-      autoAlign,
+    super(
+      auto,
       new RunCommand(()-> shooter.setShooter(1.0), shooter).withTimeout(3),
       new ParallelCommandGroup(
         new RunCommand(()-> shooter.setShooter(1.0), shooter),

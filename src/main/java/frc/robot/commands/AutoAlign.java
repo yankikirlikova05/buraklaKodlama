@@ -25,6 +25,7 @@ public class AutoAlign extends CommandBase {
     this.led = led;
     
     addRequirements(swerve, vision, led);
+   // addRequirements(swerve, vision);
   }
 
   // Called when the command is initially scheduled.

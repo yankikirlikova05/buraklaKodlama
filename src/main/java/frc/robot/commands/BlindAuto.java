@@ -36,12 +36,33 @@ public class BlindAuto extends SequentialCommandGroup {
     addCommands(
       new RunCommand(()-> shooter.setShooter(1.0), shooter).withTimeout(3),
       new ParallelCommandGroup(
-        new RunCommand(()-> shooter.setShooter(1.0), shooter),
-        new RunCommand(() -> feeder.runForward(), feeder),
-        new RunCommand(() -> storage.bothForward(), storage)
-      ).withTimeout(6),
+        new RunCommand(()-> shooter.setShooter(1.0), shooter){
+          @Override
+          public void end(boolean interrupted) {
+              // TODO Auto-generated method stub
+              super.end(interrupted);
+              shooter.setShooter(0);
+          }
+        },
+        new RunCommand(() -> feeder.runForward(), feeder){
+          @Override
+          public void end(boolean interrupted) {
+              // TODO Auto-generated method stub
+              super.end(interrupted);
+              feeder.stop();
+          }
+        },
+        new RunCommand(() -> storage.bothForward(), storage){
+          @Override
+          public void end(boolean interrupted) {
+              // TODO Auto-generated method stub
+              super.end(interrupted);
+              storage.stop();
+          }
+        }
+      ).withTimeout(5),
       
-      new RunCommand(()-> swerve.drive(0, 0.4, 0, false), swerve){
+      new RunCommand(()-> swerve.drive(0.4, 0, 0, false), swerve){
         @Override
         public void end(boolean interrupted){
           swerve.drive(0, 0, 0, false);

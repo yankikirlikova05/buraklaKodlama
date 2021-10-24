@@ -31,19 +31,19 @@ public class Climb extends SubsystemBase {
   }
 
   public void rightUp(){
-    climb1.set(0.84);
-  }
-
-  public void rightDown(){
-    climb1.set(-0.84);
-  }
-
-  public void leftUp(){
     climb2.set(0.84);
   }
 
-  public void leftDown(){
+  public void rightDown(){
     climb2.set(-0.84);
+  }
+
+  public void leftUp(){
+    climb1.set(0.84);
+  }
+
+  public void leftDown(){
+    climb1.set(-0.84);
   }
 
   public void stop(){

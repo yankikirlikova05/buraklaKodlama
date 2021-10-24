@@ -23,7 +23,7 @@ public class SwerveDriveCommand extends CommandBase {
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter rotLimiter = new SlewRateLimiter(3);
 
-  double scale = 1;
+  double scale = 0.6;
   
     /** Creates a new SwerveDriveCommand. */
     public SwerveDriveCommand(Swerve sw, XboxController joystick) {
@@ -41,20 +41,20 @@ public class SwerveDriveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    scale = Math.abs(joystick.getTriggerAxis(Hand.kRight)) > 0.4 ? 0.4 : 1;
+    scale = Math.abs(joystick.getTriggerAxis(Hand.kRight)) > 0.4 ? 1 : 0.4;
 
     final var xSpeed = xSpeedLimiter.calculate(
       (Math.abs(joystick.getY(Hand.kLeft)) < 0.1) ? 0 : joystick.getY(Hand.kLeft)
-      * Constants.Swerve.kMaxSpeed * scale);
+      * Constants.Swerve.kMaxSpeed * scale );
 
     
     final var ySpeed = ySpeedLimiter.calculate(
       (Math.abs(joystick.getX(Hand.kLeft)) <  0.1) ? 0 : joystick.getX(Hand.kLeft)
-     * Constants.Swerve.kMaxSpeed * scale);
+     * Constants.Swerve.kMaxSpeed * scale );
      
     final var rot = rotLimiter.calculate(
       (Math.abs(joystick.getX(Hand.kRight)) < 0.1) ? 0 : joystick.getX(Hand.kRight)
-      * Constants.Swerve.kMaxAngularSpeed * scale) ;
+      * Constants.Swerve.kMaxAngularSpeed * scale ) ;
 
     if(joystick.getAButton()){
       fieldOriented = fieldOriented ? false : true;

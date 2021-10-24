@@ -63,8 +63,8 @@ public class RobotContainer {
 
   // !AUTO COMMANDS
   BlindAuto blindAuto = new BlindAuto(swerveDrivetrain, feeder, storage, shooter);
-  Auto3Ball auto3Ball = new Auto3Ball(shooter, autoAlign, feeder, storage, swerveDrivetrain, vision, LED);
-  Auto3BallIntakeDrop auto3BallIntake = new Auto3BallIntakeDrop(swerveDrivetrain, feeder, storage, shooter, autoAlign);
+  Auto3Ball auto3Ball = new Auto3Ball(shooter, feeder, storage, swerveDrivetrain, vision, LED);
+  //Auto3BallIntakeDrop auto3BallIntake = new Auto3BallIntakeDrop(swerveDrivetrain, feeder, storage, shooter, autoAlign);
   
   public RobotContainer() {
     PortForwarder.add(5800, "photonvision.local", 5800);
@@ -111,7 +111,7 @@ public class RobotContainer {
     storageBackwards.whileHeld(new RunCommand(()-> storage.bothBackward(), storage));
     storageBackwards.whenReleased(new RunCommand(()-> storage.stop(), storage));*/
 
-    //TODO FEEDER BACKWARDS 
+    // FEEDER BACKWARDS 
     feeder.setDefaultCommand(feederBackwards);
 
     //new JoystickButton(operator, 10).whileHeld(autoAlign);
@@ -147,8 +147,10 @@ public class RobotContainer {
     switch (auto) {
       case 1:
         return auto3Ball;
+        //return null;
       case 2:
-        return auto3BallIntake;
+        //return auto3BallIntake;
+        return null;
       default:
         return blindAuto;
     }
